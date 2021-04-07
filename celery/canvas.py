@@ -12,7 +12,7 @@
 """
 from __future__ import absolute_import
 
-from collections import MutableSequence
+from collections.abc import MutableSequence
 from copy import deepcopy
 from functools import partial as _partial, reduce
 from operator import itemgetter
@@ -39,7 +39,7 @@ class _getitem_property(object):
 
     Example:
 
-        >>> from collections import defaultdict
+        >>> from collections.abc import defaultdict
 
         >>> class Me(dict):
         ...     deep = defaultdict(dict)

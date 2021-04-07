@@ -452,8 +452,8 @@ class Task(object):
 
         Does not support the extra options enabled by :meth:`apply_async`.
 
-        :param \*args: positional arguments passed on to the task.
-        :param \*\*kwargs: keyword arguments passed on to the task.
+        :param *args: positional arguments passed on to the task.
+        :param **kwargs: keyword arguments passed on to the task.
 
         :returns :class:`celery.result.AsyncResult`:
 
@@ -623,7 +623,7 @@ class Task(object):
         :keyword time_limit: If set, overrides the default time limit.
         :keyword soft_time_limit: If set, overrides the default soft
                                   time limit.
-        :keyword \*\*options: Any extra options to pass on to
+        :keyword **options: Any extra options to pass on to
                               meth:`apply_async`.
         :keyword throw: If this is :const:`False`, do not raise the
                         :exc:`~@Retry` exception,

@@ -153,7 +153,7 @@ class Signal(object):  # pragma: no cover
         :param sender: The sender of the signal. Either a specific
             object or :const:`None`.
 
-        :keyword \*\*named: Named arguments which will be passed to receivers.
+        :keyword **named: Named arguments which will be passed to receivers.
 
         :returns: a list of tuple pairs: `[(receiver, response), … ]`.
 
@@ -174,7 +174,7 @@ class Signal(object):  # pragma: no cover
             (normally one registered with a connect if you actually want
             something to occur).
 
-        :keyword \*\*named: Named arguments which will be passed to receivers.
+        :keyword **named: Named arguments which will be passed to receivers.
             These arguments must be a subset of the argument names defined in
             :attr:`providing_args`.
 

@@ -405,7 +405,7 @@ def detached(logfile=None, pidfile=None, uid=None, gid=None, umask=0,
     :keyword umask: Optional umask that will be effective in the child process.
     :keyword workdir: Optional new working directory.
     :keyword fake: Don't actually detach, intented for debugging purposes.
-    :keyword \*\*opts: Ignored.
+    :keyword **opts: Ignored.
 
     **Example**:
 
