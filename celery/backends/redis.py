@@ -163,7 +163,7 @@ class RedisBackend(KeyValueStoreBackend):
     def _set(self, key, value):
         with self.client.pipeline() as pipe:
             if self.expires:
-                pipe.setex(key, value, self.expires)
+                pipe.setex(key, self.expires, value)
             else:
                 pipe.set(key, value)
             pipe.publish(key, value)
@@ -261,7 +261,7 @@ class RedisBackend(KeyValueStoreBackend):
     def _new_redis_client(self, **params):
         if not self._client_capabilities['socket_connect_timeout']:
             params.pop('socket_connect_timeout', None)
-        return self.redis.Redis(connection_pool=self.ConnectionPool(**params))
+        return self.redis.StrictRedis(connection_pool=self.ConnectionPool(**params))
 
     @property
     def ConnectionPool(self):
