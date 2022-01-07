@@ -250,9 +250,10 @@ class test_BaseBackend_dict(AppCase):
             'exc_module': 'os'
         }
 
-        with pytest.raises(SecurityError,
-                           match=re.escape(r"Expected an exception class, got os.system with payload ('echo 1',)")):
+        with self.assertRaises(SecurityError) as cm:
             self.b.exception_to_python(x)
+
+        self.assertEqual(str(cm.exception), "Expected an exception class, got os.system with payload ('echo 1',)")
 
     def test_not_an_exception_but_another_object(self):
         x = {
@@ -260,10 +261,10 @@ class test_BaseBackend_dict(AppCase):
             'exc_type': 'object',
             'exc_module': 'builtins'
         }
-
-        with pytest.raises(SecurityError,
-                           match=re.escape(r"Expected an exception class, got builtins.object with payload ()")):
+        with self.assertRaises(SecurityError) as cm:
             self.b.exception_to_python(x)
+
+        self.assertEqual(str(cm.exception), "Expected an exception class, got builtins.object with payload ()")
 
 
 class test_KeyValueStoreBackend(AppCase):
