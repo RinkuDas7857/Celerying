@@ -1,11 +1,12 @@
 from __future__ import absolute_import
 
+import re
 import sys
 import types
 
 from contextlib import contextmanager
 
-from celery.exceptions import ChordError
+from celery.exceptions import ChordError, SecurityError
 from celery.five import items, range
 from celery.utils import serialization
 from celery.utils.serialization import subclass_exception
@@ -238,6 +239,32 @@ class test_BaseBackend_dict(AppCase):
         b._cache['foo'] = 1
         self.assertTrue(b.is_cached('foo'))
         self.assertFalse(b.is_cached('false'))
+
+    def test_not_an_actual_exc_info(self):
+        pass
+
+    def test_not_an_exception_but_a_callable(self):
+        x = {
+            'exc_message': ('echo 1',),
+            'exc_type': 'system',
+            'exc_module': 'os'
+        }
+
+        with self.assertRaises(SecurityError) as cm:
+            self.b.exception_to_python(x)
+
+        self.assertEqual(str(cm.exception), "Expected an exception class, got os.system with payload ('echo 1',)")
+
+    def test_not_an_exception_but_another_object(self):
+        x = {
+            'exc_message': (),
+            'exc_type': 'object',
+            'exc_module': 'builtins'
+        }
+        with self.assertRaises(SecurityError) as cm:
+            self.b.exception_to_python(x)
+
+        self.assertEqual(str(cm.exception), "Expected an exception class, got builtins.object with payload ()")
 
 
 class test_KeyValueStoreBackend(AppCase):
