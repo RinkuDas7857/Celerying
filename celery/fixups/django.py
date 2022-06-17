@@ -148,35 +148,14 @@ class DjangoWorkerFixup(object):
             _oracle_database_errors
         )
 
-    def validate_models(self):
+    def django_setup(self):
         import django
-        try:
-            django_setup = django.setup
-        except AttributeError:
-            pass
-        else:
-            django_setup()
-        s = StringIO()
-        try:
-            from django.core.management.validation import get_validation_errors
-        except ImportError:
-            from django.core.management.base import BaseCommand
-            cmd = BaseCommand()
-            try:
-                # since django 1.5
-                from django.core.management.base import OutputWrapper
-                cmd.stdout = OutputWrapper(sys.stdout)
-                cmd.stderr = OutputWrapper(sys.stderr)
-            except ImportError:
-                cmd.stdout, cmd.stderr = sys.stdout, sys.stderr
+        django.setup()
 
-            cmd.check()
-        else:
-            num_errors = get_validation_errors(s, None)
-            if num_errors:
-                raise RuntimeError(
-                    'One or more Django models did not validate:\n{0}'.format(
-                        s.getvalue()))
+    def validate_models(self) -> None:
+        from django.core.checks import run_checks
+        self.django_setup()
+        run_checks()
 
     def install(self):
         signals.beat_embedded_init.connect(self.close_database)
