@@ -79,7 +79,7 @@ import json
 
 from collections import defaultdict
 from heapq import heappush
-from inspect import getargspec
+from inspect import getfullargspec
 from optparse import OptionParser, IndentedHelpFormatter, make_option as Option
 from pprint import pformat
 
@@ -281,7 +281,7 @@ class Command(object):
             return exc.status
 
     def verify_args(self, given, _index=0):
-        S = getargspec(self.run)
+        S = getfullargspec(self.run)
         _index = 1 if S.args and S.args[0] == 'self' else _index
         required = S.args[_index:-len(S.defaults) if S.defaults else None]
         missing = required[len(given):]
