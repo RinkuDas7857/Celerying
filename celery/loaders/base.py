@@ -9,7 +9,6 @@
 from __future__ import absolute_import
 
 import anyjson
-import imp as _imp
 import importlib
 import os
 import re
@@ -276,24 +275,24 @@ def autodiscover_tasks(packages, related_name='tasks'):
 
 
 def find_related_module(package, related_name):
-    """Given a package name and a module name, tries to find that
-    module."""
-
-    # Django 1.7 allows for speciying a class name in INSTALLED_APPS.
+    """Find module in package."""
+    # Django 1.7 allows for specifying a class name in INSTALLED_APPS.
     # (Issue #2248).
     try:
-        importlib.import_module(package)
+        module = importlib.import_module(package)
+        if not related_name and module:
+            return module
     except ImportError:
         package, _, _ = package.rpartition('.')
+        if not package:
+            raise
+
+    module_name = f'{package}.{related_name}'
 
     try:
-        pkg_path = importlib.import_module(package).__path__
-    except AttributeError:
+        return importlib.import_module(module_name)
+    except ImportError as e:
+        import_exc_name = getattr(e, 'name', module_name)
+        if import_exc_name is not None and import_exc_name != module_name:
+            raise e
         return
-
-    try:
-        _imp.find_module(related_name, pkg_path)
-    except ImportError:
-        return
-
-    return importlib.import_module('{0}.{1}'.format(package, related_name))
